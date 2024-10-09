@@ -2,6 +2,7 @@ import os
 import pyperclip
 import argparse
 import fnmatch
+import mimetypes
 
 
 def get_directory_structure_with_file_contents(
@@ -9,17 +10,32 @@ def get_directory_structure_with_file_contents(
 ):
     tree_str = root_dir + "\n"
     file_contents = "\n"
-    ignored_directories = {".git", "dist", "build"}
+    ignored_directories = {
+        ".git",
+        "dist",
+        "build",
+        "node_modules",
+        "target",
+        "out",
+        "bin",
+    }
     if additional_ignored_dirs:
         ignored_directories.update(additional_ignored_dirs)
     ignored_files = {
         "LICENSE",
-        "README.md",
         ".gitignore",
         "*.pyc",
         "*.pyo",
         "*.pyd",
         "*.spec",
+        "*.class",
+        "*.jar",
+        "*.war",
+        "*.ear",
+        "*.o",
+        "*.a",
+        "*.so",
+        "*.dylib",
     }
     if additional_ignored_files:
         ignored_files.update(additional_ignored_files)
@@ -38,6 +54,11 @@ def get_directory_structure_with_file_contents(
         for f in files:
             # Skip ignored files
             if any(fnmatch.fnmatch(f, pattern) for pattern in ignored_files):
+                continue
+
+            # Detect if file is binary
+            mime_type, _ = mimetypes.guess_type(f)
+            if mime_type and not mime_type.startswith("text/"):
                 continue
 
             tree_str += "{}{}\n".format(subindent, f)
