@@ -14,6 +14,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+    permissions:
+      contents: read
+      packages: write
+      issues: write
+      deployments: write
 
     steps:
       - name: Checkout repository
@@ -41,6 +46,12 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      issues: write
+      deployments: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,7 +95,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset for Ubuntu
-        if: always()  # Ensure this step runs even if previous steps fail
+        if: always()
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
