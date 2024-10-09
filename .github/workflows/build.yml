@@ -45,11 +45,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download artifacts
+      - name: Download artifacts for Ubuntu
         uses: actions/download-artifact@v4
         with:
-          name: executable-${{ matrix.os }}
-          path: ./dist
+          name: executable-ubuntu-latest
+          path: ./dist/ubuntu
+
+      - name: Download artifacts for macOS
+        uses: actions/download-artifact@v4
+        with:
+          name: executable-macos-latest
+          path: ./dist/macos
+
+      - name: Download artifacts for Windows
+        uses: actions/download-artifact@v4
+        with:
+          name: executable-windows-latest
+          path: ./dist/windows
 
       - name: Create Release
         id: create_release
@@ -62,12 +74,32 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset for Ubuntu
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/*
-          asset_name: executable-${{ matrix.os }}.zip
+          asset_path: ./dist/ubuntu/*
+          asset_name: executable-ubuntu-latest.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset for macOS
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/macos/*
+          asset_name: executable-macos-latest.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset for Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/windows/*
+          asset_name: executable-windows-latest.zip
           asset_content_type: application/zip
