@@ -63,6 +63,15 @@ jobs:
           name: executable-windows-latest
           path: ./dist/windows
 
+      - name: List files in dist/ubuntu
+        run: ls -la ./dist/ubuntu
+
+      - name: List files in dist/macos
+        run: ls -la ./dist/macos
+
+      - name: List files in dist/windows
+        run: ls -la ./dist/windows
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -75,6 +84,7 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset for Ubuntu
+        if: always()  # Ensure this step runs even if previous steps fail
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,6 +95,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload Release Asset for macOS
+        if: always()
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,6 +106,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload Release Asset for Windows
+        if: always()
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
