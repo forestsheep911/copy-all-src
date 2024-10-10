@@ -36,11 +36,17 @@ jobs:
       - name: Build executable
         run: python src/build.py
 
+      - name: List dist directory
+        run: ls -la ./dist        
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: executable-${{ matrix.os }}
           path: dist/
+
+      - name: List dist directory after upload
+        run: ls -la ./dist
 
   release:
     needs: build
@@ -108,7 +114,8 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/ubuntu/*
+          # asset_path: ./dist/ubuntu/*
+          asset_path: ./dist/*
           asset_name: executable-ubuntu-latest.zip
           asset_content_type: application/zip
 
