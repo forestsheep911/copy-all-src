@@ -36,6 +36,18 @@ jobs:
       - name: Build executable
         run: python src/build.py
 
+      - name: Compress executable for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -j dist/executable-ubuntu-latest.zip dist/executable-linux-macos-latest
+
+      - name: Compress executable for macOS
+        if: matrix.os == 'macos-latest'
+        run: zip -j dist/executable-macos-latest.zip dist/executable-linux-macos-latest
+
+      - name: Compress executable for Windows
+        if: matrix.os == 'windows-latest'
+        run: powershell Compress-Archive -Path dist/executable-windows-latest.exe -DestinationPath dist/executable-windows-latest.zip
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -115,8 +127,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/ubuntu/main
+          asset_path: ./dist/executable-ubuntu-latest.zip
           asset_name: executable-ubuntu-latest.zip
           asset_content_type: application/zip
 
@@ -127,9 +138,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/macos/main
-          asset_name: ./dist/macos/executable-macos-latest.zip
+          asset_path: ./dist/macos/executable-macos-latest.zip
+          asset_name: executable-macos-latest.zip
           asset_content_type: application/zip
 
       - name: Upload Release Asset for Windows
@@ -139,7 +149,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/windows/main
+          asset_path: ./dist/windows/executable-windows-latest.zip
           asset_name: executable-windows-latest.zip
           asset_content_type: application/zip
