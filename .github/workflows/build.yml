@@ -120,8 +120,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          # asset_path: ./dist/ubuntu/*
-          asset_path: ./dist/*
+          asset_path: ./dist/ubuntu/*
           asset_name: executable-ubuntu-latest.zip
           asset_content_type: application/zip
 
