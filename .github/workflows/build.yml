@@ -36,8 +36,13 @@ jobs:
       - name: Build executable
         run: python src/build.py
 
-      - name: List dist directory
-        run: ls -la ./dist        
+      - name: List dist directory (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ls -la ./dist
+
+      - name: List dist directory (Windows)
+        if: runner.os == 'Windows'
+        run: Get-ChildItem -Path ./dist -Recurse
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -45,8 +50,13 @@ jobs:
           name: executable-${{ matrix.os }}
           path: dist/
 
-      - name: List dist directory after upload
+      - name: List dist directory after upload (Linux/macOS)
+        if: runner.os != 'Windows'
         run: ls -la ./dist
+
+      - name: List dist directory after upload (Windows)
+        if: runner.os == 'Windows'
+        run: Get-ChildItem -Path ./dist -Recurse
 
   release:
     needs: build
