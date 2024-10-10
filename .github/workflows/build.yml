@@ -36,18 +36,6 @@ jobs:
       - name: Build executable
         run: python src/build.py
 
-      - name: Compress executable for Ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: zip -j dist/executable-ubuntu-latest.zip dist/executable-linux-macos-latest
-
-      - name: Compress executable for macOS
-        if: matrix.os == 'macos-latest'
-        run: zip -j dist/executable-macos-latest.zip dist/executable-linux-macos-latest
-
-      - name: Compress executable for Windows
-        if: matrix.os == 'windows-latest'
-        run: powershell Compress-Archive -Path dist/executable-windows-latest.exe -DestinationPath dist/executable-windows-latest.zip -Force
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -102,8 +90,8 @@ jobs:
       - name: List files in dist/windows
         run: ls -la ./dist/windows
 
-      - name: Create Release
-        id: create_release
+      - name: Get Release Info
+        id: get_release_info
         # uses: actions/create-release@v1
         uses: actions/github-script@v6
         env:
@@ -117,18 +105,15 @@ jobs:
             });
             core.setOutput('upload_url', release.upload_url);
 
-      - name: Debug upload_url
-        run: echo ${{ steps.create_release.outputs.upload_url }}
-
       - name: Upload Release Asset for Ubuntu
         if: always()
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/executable-ubuntu-latest.zip
-          asset_name: executable-ubuntu-latest.zip
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: ./dist/cpsrc
+          asset_name: cpsrc
           asset_content_type: application/zip
 
       - name: Upload Release Asset for macOS
@@ -137,9 +122,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/macos/executable-macos-latest.zip
-          asset_name: executable-macos-latest.zip
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: ./dist/cpsrc
+          asset_name: cpsrc
           asset_content_type: application/zip
 
       - name: Upload Release Asset for Windows
@@ -148,7 +133,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/windows/executable-windows-latest.zip
-          asset_name: executable-windows-latest.zip
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: ./dist/cpsrc.exe
+          asset_name: cpsrc.exe
           asset_content_type: application/zip

@@ -6,16 +6,10 @@ import stat
 def build():
     os.system("pyinstaller --onefile --distpath dist src/main.py")
     if os.name == "nt":
-        shutil.move("dist/main.exe", "dist/executable-windows-latest.exe")
-        os.system(
-            "powershell Compress-Archive -Path dist/executable-windows-latest.exe -DestinationPath dist/executable-windows-latest.zip -Force"
-        )
+        shutil.move("dist/main.exe", "dist/cpsrc.exe")
     else:
-        shutil.move("dist/main", "dist/executable-linux-macos-latest")
-        os.chmod("dist/executable-linux-macos-latest", stat.S_IRWXU)
-        os.system(
-            "zip -j dist/executable-linux-macos-latest.zip dist/executable-linux-macos-latest"
-        )
+        shutil.move("dist/main", "dist/cpsrc")
+        os.chmod("dist/cpsrc", stat.S_IRWXU)
 
 
 if __name__ == "__main__":
