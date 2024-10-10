@@ -36,27 +36,14 @@ jobs:
       - name: Build executable
         run: python src/build.py
 
-      - name: List dist directory (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: ls -la ./dist
-
-      - name: List dist directory (Windows)
-        if: runner.os == 'Windows'
-        run: Get-ChildItem -Path ./dist -Recurse
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: executable-${{ matrix.os }}
           path: dist/
 
-      - name: List dist directory after upload (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: List dist directory after upload
         run: ls -la ./dist
-
-      - name: List dist directory after upload (Windows)
-        if: runner.os == 'Windows'
-        run: Get-ChildItem -Path ./dist -Recurse
 
   release:
     needs: build
@@ -120,7 +107,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/ubuntu/executable-ubuntu-latest.zip
+          asset_path: ./dist/ubuntu/main
           asset_name: executable-ubuntu-latest.zip
           asset_content_type: application/zip
 
@@ -132,7 +119,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/macos/*
+          asset_path: ./dist/macos/main
           asset_name: ./dist/macos/executable-macos-latest.zip
           asset_content_type: application/zip
 
@@ -144,6 +131,6 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/windows/executable-windows-latest.zip
+          asset_path: ./dist/windows/main
           asset_name: executable-windows-latest.zip
           asset_content_type: application/zip
