@@ -8,7 +8,7 @@ def build():
     if os.name == "nt":
         shutil.move("dist/main.exe", "dist/executable-windows-latest.exe")
         os.system(
-            "powershell Compress-Archive -Path dist/executable-windows-latest.exe -DestinationPath dist/executable-windows-latest.zip"
+            "powershell Compress-Archive -Path dist/executable-windows-latest.exe -DestinationPath dist/executable-windows-latest.zip -Force"
         )
     else:
         shutil.move("dist/main", "dist/executable-linux-macos-latest")
