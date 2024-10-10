@@ -83,13 +83,6 @@ jobs:
         if: runner.os == 'Windows'
         run: Get-ChildItem -Path ./dist/windows -Recurse
 
-      - name: List dist directory after upload (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: ls -la ./dist/windows
-
-      - name: List files in dist/windows
-        run: ls -la ./dist/windows
-
       - name: Get Release Info
         id: get_release_info
         # uses: actions/create-release@v1
