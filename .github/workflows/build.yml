@@ -87,6 +87,9 @@ jobs:
         if: runner.os != 'Windows'
         run: ls -la ./dist/windows
 
+      - name: List files in dist/windows
+        run: ls -la ./dist/windows
+
       - name: Create Release
         id: create_release
         # uses: actions/create-release@v1
