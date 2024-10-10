@@ -24,6 +24,7 @@ def get_directory_structure_with_file_contents(
     ignored_files = {
         "LICENSE",
         ".gitignore",
+        ".DS_Store",
         "*.pyc",
         "*.pyo",
         "*.pyd",
@@ -62,10 +63,11 @@ def get_directory_structure_with_file_contents(
                 continue
 
             tree_str += "{}{}\n".format(subindent, f)
+            relative_path = os.path.relpath(os.path.join(root, f), root_dir)
             with open(
                 os.path.join(root, f), "r", encoding="utf-8", errors="ignore"
             ) as file:
-                file_contents += f"\n=== {f} ===\n"
+                file_contents += f"\n=== {relative_path} ===\n"
                 file_contents += file.read() + "\n"
 
     return tree_str, file_contents
