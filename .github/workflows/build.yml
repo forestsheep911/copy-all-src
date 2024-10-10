@@ -2,7 +2,7 @@ name: Build and Release
 
 on:
   release:
-    types: [created]
+    types: [published]
   pull_request:
     branches:
       - main
