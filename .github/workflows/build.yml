@@ -80,7 +80,12 @@ jobs:
           path: ./dist/windows
 
       - name: List dist directory after upload (Windows)
+        if: runner.os == 'Windows'
         run: Get-ChildItem -Path ./dist/windows -Recurse
+
+      - name: List dist directory after upload (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ls -la ./dist/windows
 
       - name: Create Release
         id: create_release
@@ -96,6 +101,9 @@ jobs:
               tag: context.payload.release.tag_name
             });
             core.setOutput('upload_url', release.upload_url);
+
+      - name: Debug upload_url
+        run: echo ${{ steps.create_release.outputs.upload_url }}
 
       - name: Upload Release Asset for Ubuntu
         if: always()
