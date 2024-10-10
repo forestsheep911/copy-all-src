@@ -120,7 +120,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/ubuntu/*
+          asset_path: ./dist/ubuntu/executable-ubuntu-latest.zip
           asset_name: executable-ubuntu-latest.zip
           asset_content_type: application/zip
 
@@ -133,7 +133,7 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./dist/macos/*
-          asset_name: executable-macos-latest.zip
+          asset_name: ./dist/macos/executable-macos-latest.zip
           asset_content_type: application/zip
 
       - name: Upload Release Asset for Windows
@@ -144,6 +144,6 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/windows/*
+          asset_path: ./dist/windows/executable-windows-latest.zip
           asset_name: executable-windows-latest.zip
           asset_content_type: application/zip
