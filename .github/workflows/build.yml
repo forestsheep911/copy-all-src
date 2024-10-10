@@ -89,14 +89,13 @@ jobs:
           name: executable-windows-latest
           path: ./dist/windows
 
-      - name: List files in dist/ubuntu
-        run: ls -la ./dist/ubuntu
+      - name: List dist directory after upload (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ls -la ./dist
 
-      - name: List files in dist/macos
-        run: ls -la ./dist/macos
-
-      - name: List files in dist/windows
-        run: ls -la ./dist/windows
+      - name: List dist directory after upload (Windows)
+        if: runner.os == 'Windows'
+        run: Get-ChildItem -Path ./dist -Recurse
 
       - name: Create Release
         id: create_release
@@ -112,9 +111,6 @@ jobs:
               tag: context.payload.release.tag_name
             });
             core.setOutput('upload_url', release.upload_url);
-
-      - name: List dist directory
-        run: ls -la ./dist
 
       - name: Upload Release Asset for Ubuntu
         if: always()
