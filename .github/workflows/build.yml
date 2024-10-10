@@ -76,12 +76,17 @@ jobs:
         with:
           name: executable-ubuntu-latest
           path: ./dist/ubuntu
-
+      - name: List dist directory Linux
+        run: ls -la ./dist/ubuntu
+        
       - name: Download artifacts for macOS
         uses: actions/download-artifact@v4
         with:
-          name: executable-macos-latest
-          path: ./dist/macos
+            name: executable-macos-latest
+            path: ./dist/macos
+            
+      - name: List dist directory macOS
+        run: ls -la ./dist/macos
 
       - name: Download artifacts for Windows
         uses: actions/download-artifact@v4
@@ -89,13 +94,8 @@ jobs:
           name: executable-windows-latest
           path: ./dist/windows
 
-      - name: List dist directory after upload (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: ls -la ./dist
-
       - name: List dist directory after upload (Windows)
-        if: runner.os == 'Windows'
-        run: Get-ChildItem -Path ./dist -Recurse
+        run: Get-ChildItem -Path ./dist/windows -Recurse
 
       - name: Create Release
         id: create_release
