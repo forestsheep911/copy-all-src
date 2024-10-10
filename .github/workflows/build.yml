@@ -60,16 +60,16 @@ jobs:
         with:
           name: executable-ubuntu-latest
           path: ./dist/ubuntu
-      
+
       - name: List dist directory Linux
         run: ls -la ./dist/ubuntu
-        
+
       - name: Download artifacts for macOS
         uses: actions/download-artifact@v4
         with:
-            name: executable-macos-latest
-            path: ./dist/macos
-            
+          name: executable-macos-latest
+          path: ./dist/macos
+
       - name: List dist directory macOS
         run: ls -la ./dist/macos
 
@@ -83,9 +83,15 @@ jobs:
         if: runner.os == 'Windows'
         run: Get-ChildItem -Path ./dist/windows -Recurse
 
+      - name: List dist directory after upload (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: ls -la ./dist
+
+      - name: List files in dist/windows
+        run: ls -la ./dist/windows
+
       - name: Get Release Info
         id: get_release_info
-        # uses: actions/create-release@v1
         uses: actions/github-script@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
