@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     permissions:
-      contents: read
+      contents: write
       packages: write
       issues: write
       deployments: write
@@ -46,7 +46,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
       issues: write
       deployments: write
