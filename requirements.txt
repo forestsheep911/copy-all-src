@@ -1,2 +1,3 @@
 pyperclip
 pyinstaller
+pathspec
