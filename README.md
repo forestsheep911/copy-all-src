@@ -142,10 +142,16 @@ cpsrc
 
 ## 额外的忽略文件和目录
 
-你现在可以通过命令行参数指定额外的忽略文件和目录。例如：
+你现在可以通过命令行参数指定额外的忽略模式（类似于 .gitignore 的格式）。例如：
 
 ```sh
-python src/main.py --ignore "*.txt" "*.log" --ignore-dir "test" "tmp"
+python src/main.py --ignore "*.txt" "*.log" "test/" "tmp/"
+```
+
+你还可以通过 --ignore-config 参数指定一个包含忽略规则的文件。其书写规则等同于 `.gitignore` 例如：
+
+```sh
+python src/main.py --ignore-config your-ingnore-config-file
 ```
 
 ## 命令行参数说明
@@ -161,4 +167,4 @@ cd path/to/src/subdirectory
 cpsrc
 ```
 
-这样可以仅获取子目录的结构和文件内容，以减少 AI 对话对 token 的消耗量。
+这样可以仅获取子目录的结构和文件内容，当然用忽略的配置文件是更完备的一种节省文本量的方式。

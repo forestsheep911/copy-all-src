@@ -1,0 +1,46 @@
+# 编译生成的文件
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.class
+*.jar
+
+# 临时文件
+*.tmp
+*.swp
+*.log
+*.bak
+*.old
+
+# 操作系统特定文件
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 包管理器生成的文件
+node_modules/
+bower_components/
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 版本控制相关
+.git/
+.svn/
+.hg/
+.idea/
+.vscode/
+
+# 环境配置
+.env
+.env.*
