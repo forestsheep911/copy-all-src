@@ -9,6 +9,11 @@
 
 譬如，对此项目本身执行的话，会得到这样的文本（省略每个文件太长部分）
 
+```sh
+$ python src/main.py # 用python的方式执行，普通用户应使用 Release 中的对应平台的可执行文件
+9 folders 7 files 13.26 KB copied # 显示拷贝成功的信息，总字节数对消耗 token 的大小控制有帮助
+```
+
 ```plaintext
 D:\usr\bxu\dev\github\-copy-all-src
 /
@@ -154,10 +159,21 @@ python src/main.py --ignore "*.txt" "*.log" "test/" "tmp/"
 python src/main.py --ignore-config your-ingnore-config-file
 ```
 
+## 指定只包含的文件和目录
+
+你可以通过 --include-only 参数指定只包含的文件和目录。当指定这个参数时，只处理这些指定的文件或目录，并忽略其他所有文件和目录。例如：
+
+```sh
+python src/main.py --include-only src/main.py src/utils.py
+```
+
+当指定的是文件夹时，会遵守内置的忽略条件，如果不想忽略某些文件的，请以文件名形式传递。
+
 ## 命令行参数说明
 
 - ignore: 额外的忽略文件模式（支持通配符）。
 - ignore-dir: 额外的忽略目录。
+- include-only: 指定只包含的文件和目录。
 
 # 提醒
 如果你觉得生成的文本量太大，可以在项目相关需要 AI 修改的子目录下执行该工具。例如：
