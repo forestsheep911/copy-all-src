@@ -15,7 +15,8 @@ def process_include_only_paths(include_only_paths):
     total_bytes = 0
 
     # Load default ignore patterns
-    default_ignore_patterns = load_ignore_patterns("src/default_ignore")
+    default_ignore_path = os.path.join(os.path.dirname(__file__), "default_ignore.py")
+    default_ignore_patterns = load_ignore_patterns(default_ignore_path)
     spec = pathspec.PathSpec.from_lines("gitwildmatch", default_ignore_patterns)
 
     for path in include_only_paths:

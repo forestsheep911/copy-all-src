@@ -4,6 +4,7 @@ import argparse
 from rich.console import Console
 from utils import load_ignore_patterns, get_directory_structure_with_file_contents
 from include_only import process_include_only_paths
+from default_ignore import default_ignore_patterns  # 导入默认忽略模式
 
 # Initialize rich console
 console = Console()
@@ -26,6 +27,22 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    additional_ignore_patterns = set(args.ignore)
+
+    # 加载默认忽略模式
+    additional_ignore_patterns.update(default_ignore_patterns)
+
+    # Load patterns from .gitignore if it exists
+    gitignore_patterns = load_ignore_patterns(".gitignore")
+    additional_ignore_patterns.update(gitignore_patterns)
+
+    # Load patterns from specified ignore config file if provided
+    if args.ignore_config:
+        user_ignore_patterns = load_ignore_patterns(args.ignore_config)
+        additional_ignore_patterns.update(user_ignore_patterns)
+
+    ignore_patterns = list(additional_ignore_patterns)
+
     if args.include_only:
         # If include-only is specified, only process specified files or directories
         include_only_paths = set(args.include_only)
@@ -41,23 +58,6 @@ if __name__ == "__main__":
         final_output = directory_structure + file_contents
         pyperclip.copy(final_output)
     else:
-        additional_ignore_patterns = set(args.ignore)
-
-        # Load patterns from default ignore file
-        default_ignore_patterns = load_ignore_patterns("src/default_ignore")
-        additional_ignore_patterns.update(default_ignore_patterns)
-
-        # Load patterns from .gitignore if it exists
-        gitignore_patterns = load_ignore_patterns(".gitignore")
-        additional_ignore_patterns.update(gitignore_patterns)
-
-        # Load patterns from specified ignore config file if provided
-        if args.ignore_config:
-            user_ignore_patterns = load_ignore_patterns(args.ignore_config)
-            additional_ignore_patterns.update(user_ignore_patterns)
-
-        ignore_patterns = list(additional_ignore_patterns)
-
         current_dir = os.getcwd()
         (
             directory_structure,
