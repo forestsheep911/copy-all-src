@@ -2,14 +2,16 @@ import os
 import pyperclip
 import argparse
 from rich.console import Console
-from utils import load_ignore_patterns, get_directory_structure_with_file_contents
+import pathspec
+from directory_structure import get_directory_structure_with_file_contents
 from include_only import process_include_only_paths
-from default_ignore import default_ignore_patterns  # 导入默认忽略模式
+from ignore_loader import get_combined_ignore_patterns  # 导入新的忽略模式加载器
 
 # Initialize rich console
 console = Console()
 
-if __name__ == "__main__":
+
+def main():
     parser = argparse.ArgumentParser(description="Process some files.")
     parser.add_argument(
         "--ignore",
@@ -25,23 +27,21 @@ if __name__ == "__main__":
         nargs="*",
         help="specific files or directories to include exclusively",
     )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="display detailed debug information",
+    )
+    parser.add_argument(
+        "--max-size",
+        type=int,
+        default=64,
+        help="maximum size (in KB) to copy to clipboard (default: 64KB)",
+    )
     args = parser.parse_args()
 
-    additional_ignore_patterns = set(args.ignore)
-
-    # 加载默认忽略模式
-    additional_ignore_patterns.update(default_ignore_patterns)
-
-    # Load patterns from .gitignore if it exists
-    gitignore_patterns = load_ignore_patterns(".gitignore")
-    additional_ignore_patterns.update(gitignore_patterns)
-
-    # Load patterns from specified ignore config file if provided
-    if args.ignore_config:
-        user_ignore_patterns = load_ignore_patterns(args.ignore_config)
-        additional_ignore_patterns.update(user_ignore_patterns)
-
-    ignore_patterns = list(additional_ignore_patterns)
+    ignore_patterns = get_combined_ignore_patterns(args.ignore, args.ignore_config)
+    spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
 
     if args.include_only:
         # If include-only is specified, only process specified files or directories
@@ -51,12 +51,10 @@ if __name__ == "__main__":
             file_contents,
             total_folders,
             total_files,
-            total_lines,
             total_bytes,
-        ) = process_include_only_paths(include_only_paths)
+        ) = process_include_only_paths(include_only_paths, args.verbose)
 
         final_output = directory_structure + file_contents
-        pyperclip.copy(final_output)
     else:
         current_dir = os.getcwd()
         (
@@ -64,24 +62,34 @@ if __name__ == "__main__":
             file_contents,
             total_folders,
             total_files,
-            total_lines,
             total_bytes,
-        ) = get_directory_structure_with_file_contents(current_dir, ignore_patterns)
+        ) = get_directory_structure_with_file_contents(current_dir, spec, args.verbose)
 
         final_output = directory_structure + file_contents
-        pyperclip.copy(final_output)
 
     # Convert total_bytes to kilobytes
     total_kilobytes = total_bytes / 1024
 
-    # Custom color
-    custom_color1 = "#398BFF"
-    custom_color2 = "#A82FCC"
-    custom_color3 = "#FFA209"
+    # Check if the total size exceeds the max size
+    if total_kilobytes > args.max_size:
+        console.print(
+            f"[orange1]Warning: The content size is [bold red]{total_kilobytes:.2f} KB[/bold red], which exceeds the maximum allowed size of {args.max_size} KB.\nThe content was [bold red]not copied[/bold red] to the clipboard.[/orange1]\n"
+            f"[orange1]You can change the maximum allowed size using the [bold]--max-size[/bold] parameter.[/orange1]"
+        )
+    else:
+        pyperclip.copy(final_output)
+        # Custom color
+        custom_color1 = "#398BFF"
+        custom_color2 = "#A82FCC"
+        custom_color3 = "#FFA209"
 
-    # Print simplified statistics with custom colored numbers using rich
-    console.print(
-        f"[{custom_color1}]{total_folders}[/{custom_color1}] folders "
-        f"[{custom_color2}]{total_files}[/{custom_color2}] files "
-        f"[{custom_color3}]{total_kilobytes:.2f}[/{custom_color3}] KB copied"
-    )
+        # Print simplified statistics with custom colored numbers using rich
+        console.print(
+            f"[{custom_color1}]{total_folders}[/{custom_color1}] folders "
+            f"[{custom_color2}]{total_files}[/{custom_color2}] files "
+            f"[{custom_color3}]{total_kilobytes:.2f}[/{custom_color3}] KB copied"
+        )
+
+
+if __name__ == "__main__":
+    main()
