@@ -3,4 +3,3 @@ pyinstaller
 pathspec
 rich
 python-magic
-python-magic-bin
