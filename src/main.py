@@ -1,11 +1,15 @@
+# main.py
+
 import os
 import pyperclip
 import argparse
 from rich.console import Console
 import pathspec
-from directory_structure import get_directory_structure_with_file_contents
+from directory_structure import (
+    get_directory_structure_with_file_contents,
+)
 from include_only import process_include_only_paths
-from ignore_loader import get_combined_ignore_patterns  # 导入新的忽略模式加载器
+from ignore_loader import get_combined_ignore_patterns
 
 # Initialize rich console
 console = Console()
@@ -41,54 +45,45 @@ def main():
     args = parser.parse_args()
 
     ignore_patterns = get_combined_ignore_patterns(args.ignore, args.ignore_config)
-    spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
 
     if args.include_only:
-        # If include-only is specified, only process specified files or directories
         include_only_paths = set(args.include_only)
-        (
-            directory_structure,
-            file_contents,
-            total_folders,
-            total_files,
-            total_bytes,
-        ) = process_include_only_paths(include_only_paths, args.verbose)
-
-        final_output = directory_structure + file_contents
+        directory_structure, file_contents, total_folders, total_files, total_bytes = (
+            process_include_only_paths(
+                include_only_paths, ignore_patterns, args.verbose
+            )
+        )
     else:
         current_dir = os.getcwd()
-        (
-            directory_structure,
-            file_contents,
-            total_folders,
-            total_files,
-            total_bytes,
-        ) = get_directory_structure_with_file_contents(current_dir, spec, args.verbose)
+        directory_structure, file_contents, total_folders, total_files, total_bytes = (
+            get_directory_structure_with_file_contents(
+                current_dir, ignore_patterns, args.verbose
+            )
+        )
 
-        final_output = directory_structure + file_contents
-
-    # Convert total_bytes to kilobytes
     total_kilobytes = total_bytes / 1024
 
-    # Check if the total size exceeds the max size
     if total_kilobytes > args.max_size:
         console.print(
-            f"[orange1]Warning: The content size is [bold red]{total_kilobytes:.2f} KB[/bold red], which exceeds the maximum allowed size of {args.max_size} KB.\nThe content was [bold red]not copied[/bold red] to the clipboard.[/orange1]\n"
+            f"[orange1]Warning: The content size is [bold red]{total_kilobytes:.2f} KB[/bold red], "
+            f"which exceeds the maximum allowed size of {args.max_size} KB.\n"
+            f"The content was [bold red]not copied[/bold red] to the clipboard.[/orange1]\n"
             f"[orange1]You can change the maximum allowed size using the [bold]--max-size[/bold] parameter.[/orange1]"
         )
-    else:
-        pyperclip.copy(final_output)
-        # Custom color
-        custom_color1 = "#398BFF"
-        custom_color2 = "#A82FCC"
-        custom_color3 = "#FFA209"
+        return
 
-        # Print simplified statistics with custom colored numbers using rich
-        console.print(
-            f"[{custom_color1}]{total_folders}[/{custom_color1}] folders "
-            f"[{custom_color2}]{total_files}[/{custom_color2}] files "
-            f"[{custom_color3}]{total_kilobytes:.2f}[/{custom_color3}] KB copied"
-        )
+    final_output = directory_structure + file_contents
+    pyperclip.copy(final_output)
+
+    # Custom color
+    color1 = "#398BFF"
+    color2 = "#A82FCC"
+    color3 = "#FFA209"
+    console.print(
+        f"[{color1}]{total_folders}[/{color1}] folders "
+        f"[{color2}]{total_files}[/{color2}] files "
+        f"[{color3}]{total_kilobytes:.2f} KB copied"
+    )
 
 
 if __name__ == "__main__":

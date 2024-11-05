@@ -2,4 +2,3 @@ pyperclip
 pyinstaller
 pathspec
 rich
-python-magic

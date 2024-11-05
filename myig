@@ -2,3 +2,88 @@ README.md
 LICENSE
 .gitignore
 /build
+
+# Common binary file extensions
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+# Additional image formats
+*.heic  # High Efficiency Image File Format, commonly used by Apple
+
+# Audio
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.wma
+
+# Video
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.wmv
+*.flv
+*.webm
+
+# Archives
+*.zip
+*.tar
+*.gz
+*.bz2
+*.rar
+*.7z
+
+# Executables
+*.exe
+*.dll
+*.so
+*.bin
+*.dylib
+
+# Compiled code
+*.o
+*.obj
+*.class
+*.jar
+*.pyc
+*.pyo
+*.swf
+
+# Disk images
+*.iso
+*.img
+*.vmdk
+
+# Fonts
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# Documents
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.odt  # OpenDocument Text
+*.ods  # OpenDocument Spreadsheet
+*.odp  # OpenDocument Presentation
+*.rtf  # Rich Text Format
+
+# Adobe Files
+*.psd  # Adobe Photoshop
+*.ai   # Adobe Illustrator
+*.indd # Adobe InDesign
+*.xd   # Adobe XD
+
