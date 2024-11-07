@@ -49,7 +49,6 @@ def main():
         )
     else:
         current_dir = os.getcwd()
-        print(current_dir)
         directory_structure, file_contents, total_folders, total_files, total_bytes = (
             process_exclude_paths(
                 current_dir, ignore_patterns, args.verbose, args.max_size
