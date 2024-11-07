@@ -1,8 +1,3 @@
-README.md
-LICENSE
-.gitignore
-/build
-
 # Common binary file extensions
 
 # Images
@@ -87,3 +82,8 @@ LICENSE
 *.indd # Adobe InDesign
 *.xd   # Adobe XD
 
+# This Project
+README.md
+LICENSE
+.gitignore
+/build

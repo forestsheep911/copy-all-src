@@ -4,13 +4,9 @@ import os
 import pyperclip
 import argparse
 from rich.console import Console
-import pathspec
-from directory_structure import (
-    get_directory_structure_with_file_contents,
-)
-from include_only import process_include_only_paths
 from ignore_loader import get_combined_ignore_patterns
-from include_only import collect_include_only_contents
+from include import process_include_paths
+from exclude import process_exclude_paths
 
 # Initialize rich console
 console = Console()
@@ -25,17 +21,15 @@ def main():
         help="additional patterns to ignore (files and directories)",
     )
     parser.add_argument(
-        "--ignore-config", type=str, help="path to additional ignore config file"
+        "--igfile", type=str, help="path to additional ignore config file"
     )
     parser.add_argument(
-        "--include-only",
+        "--include",
         nargs="*",
         help="specific files or directories to include exclusively",
     )
     parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="display detailed debug information",
+        "--verbose", action="store_true", help="display detailed debug information"
     )
     parser.add_argument(
         "--max-size",
@@ -45,32 +39,28 @@ def main():
     )
     args = parser.parse_args()
 
-    ignore_patterns = get_combined_ignore_patterns(args.ignore, args.ignore_config)
-    spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
-
-    if args.include_only:
-        include_only_paths = set(args.include_only)
-        directory_structure, total_folders, total_files, total_bytes = (
-            process_include_only_paths(include_only_paths, spec, args.verbose)
-        )
-        # 这里解包三个返回值
-        directory_structure, file_contents, total_bytes = collect_include_only_contents(
-            include_only_paths, spec, args.verbose
+    ignore_patterns = get_combined_ignore_patterns(args.ignore, args.igfile)
+    if args.include:
+        include_paths = set(args.include)
+        directory_structure, file_contents, total_folders, total_files, total_bytes = (
+            process_include_paths(
+                include_paths, ignore_patterns, args.verbose, args.max_size
+            )
         )
     else:
         current_dir = os.getcwd()
+        print(current_dir)
         directory_structure, file_contents, total_folders, total_files, total_bytes = (
-            get_directory_structure_with_file_contents(current_dir, spec, args.verbose)
+            process_exclude_paths(
+                current_dir, ignore_patterns, args.verbose, args.max_size
+            )
         )
 
     total_kilobytes = total_bytes / 1024
 
     if total_kilobytes > args.max_size:
         console.print(
-            f"[orange1]Warning: The content size is [bold red]{total_kilobytes:.2f} KB[/bold red], "
-            f"which exceeds the maximum allowed size of {args.max_size} KB.\n"
-            f"The content was [bold red]not copied[/bold red] to the clipboard.[/orange1]\n"
-            f"[orange1]You can change the maximum allowed size using the [bold]--max-size[/bold] parameter.[/orange1]"
+            f"[orange1]Warning: The content size is [bold red]{total_kilobytes:.2f} KB[/bold red], which exceeds the maximum allowed size of {args.max_size} KB.\nThe content was [bold red]not copied[/bold red] to the clipboard.[/orange1]\n[orange1]You can change the maximum allowed size using the [bold light_green]--max-size[/bold light_green] parameter.[/orange1]"
         )
         return
 
@@ -82,9 +72,7 @@ def main():
     color2 = "#A82FCC"
     color3 = "#FFA209"
     console.print(
-        f"[{color1}]{total_folders}[/{color1}] folders "
-        f"[{color2}]{total_files}[/{color2}] files "
-        f"[{color3}]{total_kilobytes:.2f} KB copied"
+        f"[{color1}]{total_folders}[/{color1}] folders [{color2}]{total_files}[/{color2}] files [{color3}]{total_kilobytes:.2f}[/{color3}] KB copied"
     )
 
 
