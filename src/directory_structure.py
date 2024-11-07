@@ -1,6 +1,6 @@
 import os
 from rich.console import Console
-from file_utils import collect_file_contents
+from file_utils import calculate_total_size
 import pathspec
 
 console = Console()
@@ -49,6 +49,9 @@ def get_directory_structure_with_file_contents(
     total_lines = 0
     total_bytes = 0
     spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
+
+    # 先计算总大小，输出每个文件的大小
+    total_bytes = calculate_total_size(root_dir, spec, verbose)
 
     for root, dirs, files in os.walk(root_dir):
         # Skip ignored directories

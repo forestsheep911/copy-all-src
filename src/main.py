@@ -10,6 +10,7 @@ from directory_structure import (
 )
 from include_only import process_include_only_paths
 from ignore_loader import get_combined_ignore_patterns
+from include_only import collect_include_only_contents
 
 # Initialize rich console
 console = Console()
@@ -45,20 +46,21 @@ def main():
     args = parser.parse_args()
 
     ignore_patterns = get_combined_ignore_patterns(args.ignore, args.ignore_config)
+    spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
 
     if args.include_only:
         include_only_paths = set(args.include_only)
-        directory_structure, file_contents, total_folders, total_files, total_bytes = (
-            process_include_only_paths(
-                include_only_paths, ignore_patterns, args.verbose
-            )
+        directory_structure, total_folders, total_files, total_bytes = (
+            process_include_only_paths(include_only_paths, spec, args.verbose)
+        )
+        # 这里解包三个返回值
+        directory_structure, file_contents, total_bytes = collect_include_only_contents(
+            include_only_paths, spec, args.verbose
         )
     else:
         current_dir = os.getcwd()
         directory_structure, file_contents, total_folders, total_files, total_bytes = (
-            get_directory_structure_with_file_contents(
-                current_dir, ignore_patterns, args.verbose
-            )
+            get_directory_structure_with_file_contents(current_dir, spec, args.verbose)
         )
 
     total_kilobytes = total_bytes / 1024
