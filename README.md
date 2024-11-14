@@ -153,27 +153,27 @@ cpsrc
 python src/main.py --ignore "*.txt" "*.log" "test/" "tmp/"
 ```
 
-你还可以通过 --ignore-config 参数指定一个包含忽略规则的文件。其书写规则等同于 `.gitignore` 例如：
+你还可以通过 --igfile 参数指定一个包含忽略规则的文件。其书写规则等同于 `.gitignore` 例如：
 
 ```sh
-python src/main.py --ignore-config your-ingnore-config-file
+python src/main.py --igfile your-ingnore-config-file
 ```
 
 ## 指定只包含的文件和目录
 
-你可以通过 --include-only 参数指定只包含的文件和目录。当指定这个参数时，只处理这些指定的文件或目录，并忽略其他所有文件和目录。例如：
+你可以通过 --include 参数指定只包含的文件和目录。当指定这个参数时，只处理这些指定的文件或目录，并忽略其他所有文件和目录。例如：
 
 ```sh
-python src/main.py --include-only src/main.py src/utils.py
+python src/main.py --include src/main.py src/utils.py
 ```
 
 当指定的是文件夹时，会遵守内置的忽略条件，如果不想忽略某些文件的，请以文件名形式传递。
 
 ## 命令行参数说明
 
-- ignore: 额外的忽略文件模式（支持通配符）。
-- ignore-dir: 额外的忽略目录。
-- include-only: 指定只包含的文件和目录。
+- ignore: 额外的忽略文件模式（以文件通配符匹配字符串传参）。
+- igfile: 额外的忽略文件模式（以忽略文件名传参）
+- include: 指定只包含的文件和目录。
 - verbose: 显示详细的调试信息。
 - max-size: 能复制到剪贴板最大大小上限，纯数字不用带单位，单位内置固定为KB。（缺省默认：64KB）
 
@@ -185,10 +185,10 @@ cd path/to/src/subdirectory
 cpsrc
 ```
 
-或者还是使用 `--include-only` 参数，因为是可以加多个值的，所以还是比较方便
+或者还是使用 `--include` 参数，因为是可以加多个值的，所以还是比较方便
 
 ```sh
-cpsrc --include-only src config public .vscode
+cpsrc --include src config public .vscode
 ```
 
 这样可以仅获取子目录的结构和文件内容，当然用忽略的配置文件是更完备的一种节省文本量的方式。
