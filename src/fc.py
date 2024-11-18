@@ -27,6 +27,8 @@ def collect_file_contents(paths, ignore_patterns, verbose=False):
                     with open(
                         file_path, "r", encoding="utf-8", errors="ignore"
                     ) as file:
+                        # Add file path header before the content
+                        file_contents += f"\n=== {file_path} ===\n"
                         for line in file:
                             file_contents += line
                     total_bytes += os.path.getsize(file_path)
