@@ -48,7 +48,7 @@ jobs:
         shell: python
         run: |
           with open('src/version.py', 'w') as f:
-              f.write(f'VERSION = "{os.environ["GITHUB_REF"].split("/")[-1]}"')
+              f.write(f'VERSION = "${{ github.ref_name }}"')
 
       - name: Build executable
         run: python src/build.py
