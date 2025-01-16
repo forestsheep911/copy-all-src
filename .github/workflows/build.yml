@@ -43,6 +43,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Update version    # 在这里添加版本更新步骤
+        if: github.event_name == 'release'
+        run: |
+          echo "VERSION = \"${GITHUB_REF#refs/tags/}\"" > src/version.py
+
       - name: Build executable
         run: python src/build.py
 

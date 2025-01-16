@@ -7,6 +7,7 @@ from rich.console import Console
 from ignore_loader import get_combined_ignore_patterns
 from include import process_include_paths
 from exclude import process_exclude_paths
+from version import VERSION
 
 # Initialize rich console
 console = Console()
@@ -14,6 +15,12 @@ console = Console()
 
 def main():
     parser = argparse.ArgumentParser(description="Process some files.")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {VERSION}",
+        help="show program's version number and exit",
+    )
     parser.add_argument(
         "--ignore",
         nargs="*",
